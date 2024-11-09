@@ -3,10 +3,15 @@
 \usepackage{fontspec}
 \usepackage{hyperref}
 \usepackage{polyglossia}
+\usepackage[a4paper, left=3cm, right=1cm, top=2cm, bottom=2cm]{geometry}
+\usepackage{setspace}
 
 \setdefaultlanguage{russian}
 \setmonofont{DejaVu Sans Mono}
 \setmainfont{Times New Roman}
+\renewcommand{\normalsize}{\fontsize{14}{21}\selectfont}
+\onehalfspacing
+
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\A}{\mathcal{A}}
 \renewcommand{\P}{\mathbb{P}}
@@ -16,5 +21,6 @@
 \newcommand{\Prove}{\text{Prove}}
 \newcommand{\Verify}{\text{Verify}}
 \newtheorem{definition}{Определение}
+
 \sloppy
 \hbadness=10000

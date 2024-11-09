@@ -21,7 +21,7 @@ ENV PATH="/usr/local/texlive/2024/bin/x86_64-linux:${PATH}"
 
 RUN tlmgr update --self && \
     tlmgr update --all && \
-    tlmgr install latexmk fontspec etoolbox polyglossia
+    tlmgr install latexmk fontspec etoolbox polyglossia setspace
 
 WORKDIR /app
 
