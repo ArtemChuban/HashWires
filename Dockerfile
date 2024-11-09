@@ -25,6 +25,6 @@ RUN echo "@BIBINPUTS = ('/data/src');" > .latexmkrc
 
 RUN tlmgr update --self && \
     tlmgr update --all && \
-    tlmgr install latexmk fontspec
+    tlmgr install latexmk fontspec etoolbox polyglossia
 
 VOLUME ["/data"]
