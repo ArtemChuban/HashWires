@@ -18,13 +18,11 @@ RUN wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
     rm -r /install-tl-unx install-tl-unx.tar.gz
 
 ENV PATH="/usr/local/texlive/2024/bin/x86_64-linux:${PATH}"
-ENV HOME=/data
-WORKDIR /data
-
-RUN echo "@BIBINPUTS = ('/data/src');" > .latexmkrc
 
 RUN tlmgr update --self && \
     tlmgr update --all && \
     tlmgr install latexmk fontspec etoolbox polyglossia
 
-VOLUME ["/data"]
+WORKDIR /app
+
+VOLUME ["/data", "/cache"]
