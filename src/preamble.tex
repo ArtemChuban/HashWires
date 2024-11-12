@@ -1,10 +1,13 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{fontspec}
 \usepackage{hyperref}
 \usepackage{polyglossia}
 \usepackage[a4paper, left=3cm, right=1cm, top=2cm, bottom=2cm]{geometry}
 \usepackage{setspace}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 \setdefaultlanguage{russian}
 \setmonofont{DejaVu Sans Mono}
@@ -15,12 +18,31 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\A}{\mathcal{A}}
 \renewcommand{\P}{\mathbb{P}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\X}{\mathcal{X}}
+\newcommand{\Y}{\mathcal{Y}}
+
 \newcommand{\com}{\text{com}}
 \newcommand{\Setup}{\text{Setup}}
 \newcommand{\Commit}{\text{Commit}}
 \newcommand{\Prove}{\text{Prove}}
 \newcommand{\Verify}{\text{Verify}}
+\newcommand{\ExptWI}{\text{Expt}^\text{WI}}
+\newcommand{\ExptACC}{\text{Expt}^\text{ACC}}
+\newcommand{\ACC}{\text{ACC}}
+\newcommand{\Eval}{\text{Eval}}
+\newcommand{\WitCreate}{\text{WitCreate}}
+\newcommand{\pp}{\text{pp}}
+\newcommand{\acc}{\text{acc}}
+\newcommand{\wit}{\text{wit}}
+\newcommand{\MDP}{\text{MDP}}
+\newcommand{\HW}{\text{HW}}
+\newcommand{\HWS}{\text{HWS}}
+\newcommand{\OPT}{\text{OPT}}
+
 \newtheorem{definition}{Определение}
+\newtheorem{theorem}{Теорема}
+\floatname{algorithm}{Алгоритм}
 
 \sloppy
 \hbadness=10000
