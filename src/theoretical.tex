@@ -32,6 +32,7 @@
 \end{definition}
 
 \begin{definition}[Обязательно-условная корректность]
+	\label{definition:3}
 	CBRP удовлетворяет обязательно-условной корректности если для любого сколь угодно эффективного злоумышленника $\A$, который на основе публичных параметров $\pp \leftarrow \Setup(1^\lambda)$ генерирует набор $(x, t, r, \pi) \in [N] \times [N] \times \{0, 1\}^\lambda \times \P$, где $x < t$, вероятность $\Verify(\pp, \Commit(\pp, x; r), t, \pi) = 1$ незначительна по отношению к $\lambda$.
 \end{definition}
 
@@ -265,3 +266,147 @@ $$
 		\item $\HW.\Verify(\pp, \com, t, \pi) \rightarrow z$. Алгоритм проверки на основе публичных параметров $\pp = (\pp_\ACC, N, b, d)$, обязательства $\com$, порогового значения $t \in [N]$ и его разложению $t_1 \dots t_d$ по основанию $b$ и доказательства $\wit = (\wit, \langle v_1, \dots, v_d \rangle)$ генерирует один бит $z \leftarrow \ACC.\Verify(\pp_\ACC, \com, \wit, c^*)$, где $c^* \leftarrow H(H^{t_1}(v_1) || \dots || H^{t_d}(v_d)$.
 	\end{itemize}
 \end{definition}
+
+\begin{theorem}
+	\label{lemma:4}
+	Основная конструкция $HW$ удовлетворяет идеальной полноте.
+\end{theorem}
+
+\begin{proof}
+	Пусть $y_1 \dots y_d$ представление по основанию $b$ некоторого элемента из $\MDP_b(x)$, доминирующего над $t = t_1 \dots t_d$, так как $x \geq t$.
+	Идеальная полнота следует из определения доказательства и его определения значений $v_1, \dots, v_d$.
+	Так как проверяющий вычисляет $c^* \leftarrow H(H^{t_1}(v_1) || \dots || H^{t_d}(v_d))$, где $v_j = H^{y_j - t_j}(r_{i^*, j})$, то из этого следует, что набор $\{c_1, \dots, c_d\}$ совпадает с набором, для которого $\ACC.\Eval$ генерирует $\com$.
+	И значит, благодаря корректности аккумулятора, получаем $\HW.\Verify(\pp, \HW.\Commit(\pp, x; r), t, \HW.\Prove(x, t; r)) = 1$.
+\end{proof}
+
+\begin{theorem}
+	\label{lemma:5}
+	Основная конструкция $\HW$ удовлетворяет свойству навязывающего обязательства, при условии, что $H$ - устойчивая к коллизиям хеш-функция и $\ACC$ - безопасный аккумулятор.
+\end{theorem}
+
+\begin{proof}
+	По определению навязывающего обязательства, для доказательства необходимо показать, что для двух различных целых положительных чисел $x_0, x_1 \in [N]$, вероятность совпадения из обязательств незначительна.
+	Предположим, что $\HW.\Commit(\pp, x_0; r_0) = \com = \HW.\Commit(\pp, x_1; r_1)$.
+	Пусть $(P^{(z)}, \langle c_1^{(z)}, \dots, c_d^{(z)} \rangle, \langle r_{1, 1}^{(z)}, \dots, r_{d, d}^{(z)} \rangle) \leftarrow \HWS_d(x_0; r_0)$ и $C^{(z)} = \{c_1^{(z)}, \dots, c_d^{(z)}\}$ для $z \in \{0, 1\}$.
+	Рассмотрим два случая:
+	% TODO: дописать
+\end{proof}
+
+\begin{definition}[$E_0(\A)$ и $E_1(\A)$]
+	\begin{itemize}
+		\item Эксперимент $E_0(\A)$ генерирует $z \leftarrow \Verify(\pp, \com, t, \pi)$, где $pp \leftarrow \Setup(1^\lambda)$, $(x, t, r, \pi) \leftarrow \A(\pp)$ и $\com \leftarrow \Commit(\pp, c; r)$.
+		\item Эксперимент $E_1(\A)$ генерирует 
+		$$
+		z =
+		\begin{cases}
+		0 & \text{если } H(H^{t_1}(v_1) || \dots || H^{t_d}(v_d)) \rightarrow c^* \notin C \\
+		\Verify(\pp, \com, t, \pi) & \text{иначе}
+		\end{cases}
+		$$
+		где $(x, t, r, \pi) \leftarrow \A(\pp)$, $\pp = (\pp_\ACC, N, b, d) \leftarrow \Setup(1^\lambda)$, $(\wit, \langle c_a, \dots, v_d \rangle) \leftarrow \pi$, $C = \{c_1, \dots, c_d\}$ - набор значений, для которых $\com = \ACC.\Eval(\pp_\ACC, C)$
+	\end{itemize}
+\end{definition}
+
+\begin{theorem}
+	\label{lemma:7}
+	Для любого сколь угодно эффективного злоумышленника $\A$, $E_0(\A) \approx E_1(\A)$ при безопасном акккумяляторе $\ACC$.
+\end{theorem}
+
+\begin{proof}
+	Заметим, что единственная разница между экспериментами  $E_0$ и $E_1$ заключается в проверки $c^* \notin C$.
+	Следовательно, если $E_0(\A) = 0$, то $E_1(\A) = 0$ по определению.
+	Если $E_0(\A) = 1$ и $c^* \in C$, то $E_1(\A) = 1$.
+	Остается последний случай, когда $E_0(\A) = 1$, $c^* \notin C$ и $E_1(\A) = 1$.
+	Сконструируем алгоритм $\B$, по которому будет приниматься участие в эксперименте $\ExptACC$ следующим образом:
+	\begin{itemize}
+		\item По публичным параметрам $\pp = (\pp_\ACC, N, b, d)$ от доверенного лица, вычисляется $(x, t, r, \pi) \leftarrow \A(\pp)$ и $(\wit, \langle v_1, \dots, v_d \rangle) \leftarrow \pi$.
+		\item Затем свидетельство $\wit$, элемент $c^* \leftarrow H(H^{t_1}(v_1) || \dots || H^{t_d}(v_d))$ и набор $C$, для которого $\com = \ACC.\Eval(\pp_\ACC, C)$ доверенному лицу.
+		\item Доверенное лицо возвращает один бит $z$, который является результатом эксперимента.
+	\end{itemize}
+	Если $c^* \notin C$ и $E_1(\A) = 1$, то $\ExptACC(\B) = 1$ по определению.
+	Таким образом, обозначив $\epsilon$ как наибольшее преимущество всех возможных злоумышленников, учавствующих в эксперименте $\ExptACC$, получим $|\Pr[E_0(\A) = 1] - \Pr[E_1(\A) = 1]| \leq \epsilon$, что доказывает теорему.
+\end{proof}
+
+\begin{theorem}
+	\label{lemma:8}
+	Для сколь угодно эффективного злоумышленника $\A$, величина $\Pr[E_1(\A) = 1] \leq \epsilon$, где $\epsilon$ - вероятность найти коллизию для $H$.
+\end{theorem}
+
+\begin{proof}
+	% TODO
+\end{proof}
+
+\begin{theorem}
+	\label{lemma:6}
+	Основная конструкция $HW$, на основе устойчивой к коллизиям хеш-функции $H$ и безопасного аккумулятора $ACC$, удовлетворяет обязательно-условной корректности.
+\end{theorem}
+
+\begin{proof}
+	Заметим, что $E_0$ точно совпадает с \ref{definition:3}.
+	Следовательно, доказательство вытекает из \ref{lemma:7} и $\ref{lemma:8}$.
+\end{proof}
+
+\begin{definition}[Симулятор]
+	Симулятор $Sim$: $PP \times [N] \rightarrow \P \times \C$, получающий на вход публичные параметры $\pp \in PP$, целое положительное пороговое значение $t \in [N]$ и возвращающий набор $(\pi, \com) \in \P \times \C$, определяется следующим образом:
+	\begin{enumerate}
+		\item Используя $(\pp_\ACC, N, b, d) \leftarrow \pp$, выбираются случайный индекс $i^* \leftarrow_R [d]$, $d - 1$ значение $c_1, \dots, c_{i^* - 1}, c_{i^* + 1}, \dots, c_d \leftarrow_R \{0, 1\}^\lambda$ и значения $v_1, \dots, v_d \leftarrow_R \{0, 1\}^\lambda$.
+		\item Для каждого $j \in [d]$, определяется $c_{i^*} \leftarrow H(H^{t_1}(v_1) || \dots || H^{t_d}(v_d))$, где $t_1 \dots t_d$ - разложением порогового значения $t$ по основанию $b$.
+		\item Используя $C = \{c_1, \dots, c_d\}$, вычисляются $\wit \leftarrow (\ACC.\WitCreate(\pp_\ACC, c_{i^*}, C), \wit \leftarrow (\wit, \langle v_1, \dots, v_d \rangle), \com \leftarrow \ACC.\Eval(\pp_\ACC, C))$ и возвращает $(\pi, \com)$.
+	\end{enumerate}
+\end{definition}
+
+\begin{definition}[Распределения $D_0$, $D_1$, $D_2$ и $D_3$]
+	Определим следующую серию распределений:
+	\begin{itemize}
+		\item $D_0$: равнозначно распределению $(\pp, Sim(t), x, t)$.
+		\item $D_1$: подобно $D_0$, за исключением метода генерации значений $v_1, \dots, v_d$. Вместо того, чтобы равномерно выбирать их из $\{0, 1\}^\lambda$, выбирается $r^* \leftarrow_R \{0, 1\}^\lambda$. Пусть $\langle w_1, \dots, w_m \rangle \leftarrow \MDP_b(x)$ и $i^* \in [m]$ - первый индекс, такой что $w_{i^*}$ доминирует над $t$. Обозначив $y_1 \dots y_d$ и $t_1 \dots t_d$ как разложение по основанию $b$ чисел $w_{i^*}$ и $t$ соответственно, определим $v_j \leftarrow H^{y_j - t_j}(H((i^*, j) || r^*)$. Все остальные шаги остаются неизменными.
+		% TODO [d] \ {i*} - знак \
+		\item $D_2$: подобно $D_1$, за исключением метода генерации значений $c_1, \dots, c_{i^* - 1}, c_{i^* + 1}, \dots, c_d$. Вместо того, чтобы равномерно выбирать их из $\{0, 1\}^\lambda$, выбирается $r \leftarrow_R \{0, 1\}^\lambda$, для каждого $i, j \in [d]$ вычисляется $r_{i, j} \leftarrow H((i, j) || r)$ и $\langle w_1, \dots, w_m \rangle \leftarrow \MDP_b(x)$, используя $H$ и $r$ выбирается перестановка $P'$: $[d] / \{i^*\} \rightarrow [d] / \{i^*\}$, и для каждого $i \in [d] / \{i^*\}$, зафиксировать $a_i \leftarrow \HWS_d(w_r; r_i)$ и $c_i \leftarrow a_{P'(i)}$. Все остальные шаги остаются неизменными.
+		\item $D_3$: равнозначно распределению $(\pp, (\Prove(\pp, x, r; r), \Commit(\pp, x; r)), x, t)$.
+	\end{itemize}
+\end{definition}
+
+\begin{theorem}
+	\label{lemma:10}
+	Для любого сколь угодно эффективного злоумышленника, который различает $D_0$ и $D_1$ с вероятностью не больше $\epsilon$, существует злоумышленник, который взламывает безопасную случайность $G$ или $H$ с вероятностью не менее $\frac{\epsilon}{(b + 1) \cdot d}$.
+\end{theorem}
+
+\begin{proof}
+	% TODO
+\end{proof}
+
+\begin{theorem}
+	\label{lemma:11}
+	Для любого сколь угодно эффективного злоумышленника, который различает $D_1$ и $D_2$ с вероятностью не больше $\epsilon$, существует злоумышленник, который взламывает безопасную случайность $H$ с вероятностью не менее $\frac{\epsilon}{b \cdot d \cdot (d - 1)}$.
+\end{theorem}
+
+\begin{proof}
+	% TODO
+\end{proof}
+
+\begin{theorem}
+	\label{lemma:12}
+	Распределения $D_2$ и $D_3$ идентичны.
+\end{theorem}
+
+\begin{proof}
+	% TODO
+\end{proof}
+
+\begin{theorem}
+	\label{lemma:9}
+	Основная конструкция $HW$, основанная на безопасно случайной хеш-функции $H$, удовлетворяет условию неразличимости свидетелей.
+\end{theorem}
+
+\begin{proof}
+	% TODO
+\end{proof}
+
+\begin{theorem}
+	\label{theorem:2}
+	Основная конструкция $\HW$ является безопасным $CBRP$, основанным на том, что $H$ - устойчивая к коллизияим и безопасно случайная хеш-функция и $\ACC$ - безопасный аккумулятор.
+\end{theorem}
+
+\begin{proof}
+	Из \ref{lemma:4}, \ref{lemma:5}, \ref{lemma:6} и \ref{lemma:9} следует доказательство теоремы.
+\end{proof}
